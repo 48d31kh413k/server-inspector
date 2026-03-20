@@ -1,0 +1,41 @@
+name: CI – ShellCheck Lint
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+    branches: ["main", "master"]
+
+jobs:
+  shellcheck:
+    name: ShellCheck
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install ShellCheck
+        run: sudo apt-get update -qq && sudo apt-get install -y shellcheck
+
+      - name: Run ShellCheck
+        run: shellcheck server_info.sh
+
+  test:
+    name: Smoke test (syntax check)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check Bash syntax
+        run: bash -n server_info.sh
+
+      - name: Help flag works
+        run: bash server_info.sh --help
+
+      - name: Version flag works
+        run: bash server_info.sh --version
